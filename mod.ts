@@ -57,6 +57,7 @@ export const treemap =
     sort,
     text = () => "",
     value = () => 1,
+    fontSize = 1,
     rectAttrs,
     textAttrs,
 }: {
@@ -64,6 +65,7 @@ export const treemap =
     sort?: (a: T, b: T) => number,
     text?: (datum: T) => string,
     value?: (datum: T) => number,
+    fontSize?: number,
     rectAttrs?: (datum: T) => Record<string, string | number>,
     textAttrs?: (datum: T) => Record<string, string | number>,
 } = {}) =>
@@ -120,13 +122,14 @@ export const treemap =
 
         const tx = rw / 2
         const ty = rh / 2
-        const fontSize = Math.min(rw, rh) * 0.8
+
+        const val = d.data.value ?? value(datum) ?? 1
 
         const textAttrStr = Object.entries({
             "text-anchor": "middle",
             "dominant-baseline": "central",
             "font-family": "'Pretendard Variable', Pretendard, sans-serif",
-            "font-size": `${fontSize}px`,
+            "font-size": val*fontSize,
             fill: "black",
             ...customTextAttrs
         }).map(([k, v]) => `${k}="${v}"`).join(" ")

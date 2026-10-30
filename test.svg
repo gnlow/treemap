@@ -6,10 +6,10 @@
     
     <g transform="translate(2,2)">
         <rect width="1063.6666666666667" height="896" fill="red" />
-        <text x="531.8333333333334" y="448" text-anchor="middle" dominant-baseline="central" font-family="'Pretendard Variable', Pretendard, sans-serif" font-size="716.8000000000001px" fill="black">괴</text>
+        <text x="531.8333333333334" y="448" text-anchor="middle" dominant-baseline="central" font-family="'Pretendard Variable', Pretendard, sans-serif" font-size="20" fill="black">괴</text>
     </g>
     <g transform="translate(1066.6666666666667,2)">
         <rect width="531.3333333333333" height="896" fill="red" />
-        <text x="265.66666666666663" y="448" text-anchor="middle" dominant-baseline="central" font-family="'Pretendard Variable', Pretendard, sans-serif" font-size="425.0666666666666px" fill="black">b</text>
+        <text x="265.66666666666663" y="448" text-anchor="middle" dominant-baseline="central" font-family="'Pretendard Variable', Pretendard, sans-serif" font-size="10" fill="black">b</text>
     </g>
 </svg>
