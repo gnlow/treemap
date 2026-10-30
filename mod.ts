@@ -1,10 +1,5 @@
 import * as d3 from "https://esm.sh/d3@7.9.0"
 
-import {
-    createCanvas,
-    CanvasRenderingContext2D as Ctx,
-} from "https://deno.land/x/canvas@v1.4.2/mod.ts"
-
 type Tree<A> = {
     [key: string | number]: A[] | Tree<A>
 }
@@ -58,11 +53,11 @@ const tree =
 type KV = [string, number]
 
 export const treemap =
-({ group, sort, bg, text }: {
+({ group, sort, rectAttrs, textAttrs }: {
     group?: (datum: KV) => (string | number)[],
     sort?: (a: KV, b: KV) => number,
-    bg?: (ctx: Ctx) => (datum: KV) => void,
-    text?: (ctx: Ctx) => (datum: KV) => void,
+    rectAttrs?: (datum: KV) => Record<string, string | number>,
+    textAttrs?: (datum: KV) => Record<string, string | number>,
 } = {}) =>
 (data: KV[]) => {
     let root = d3.hierarchy<Node>(
@@ -79,41 +74,60 @@ export const treemap =
         ))
     }
 
-    const size = [2025, 1072] as [number, number]
-
-    const canvas = createCanvas(size[0], size[1])
-    const ctx = canvas.getContext("2d")
+    const [width, height] = [1600, 900]
 
     d3.treemap<Node>()
-        .size(size)
+        .size([width, height])
         .padding(1)
         (root)
 
-    ctx.fillStyle = "white"
-    ctx.fillRect(0, 0, size[0], size[1])
+    const leaves = (root as d3.HierarchyRectangularNode<Node>).leaves()
 
-    ;(root as d3.HierarchyNode<Node> & {
-        x0: number
-        y0: number
-        x1: number
-        y1: number
-    }).leaves().forEach(({ x0, y0, x1, y1, data }) => {
-        ctx.fillStyle = "white"
-        bg?.(ctx)([data.name, data.value || 0])
-        ctx.fillRect(x0, y0, x1-x0, y1-y0)
+    const escapeXml = (str: string) => 
+        str.replace(/[<>&'"]/g, c => ({
+            '<': '&lt;', '>': '&gt;', '&': '&amp;', "'": '&apos;', '"': '&quot;'
+        }[c]!))
 
-        const size = Math.min(x1-x0, y1-y0) * 0.8
+    const rectsHtml = leaves.map(d => {
+        const datum: KV = [d.data.name, d.data.value || 0]
+        const customRectAttrs = rectAttrs?.(datum) ?? {}
+        const customTextAttrs = textAttrs?.(datum) ?? {}
 
-        ctx.fillStyle = "black"
-        ctx.font = `${size}px Pretendard`
-        ctx.textAlign = "center"
-        ctx.textBaseline = "middle"
-        text?.(ctx)([data.name, data.value || 0])
-        ctx.fillText(
-            data.name,
-            (x0 + x1) / 2,
-            (y0 + y1) / 2,
-        )
-    })
-    return canvas
+        const rx = d.x0
+        const ry = d.y0
+        const rw = d.x1 - d.x0
+        const rh = d.y1 - d.y0
+
+        const rectAttrStr = Object.entries({
+            fill: "white",
+            ...customRectAttrs
+        }).map(([k, v]) => `${k}="${v}"`).join(" ")
+
+        const tx = rw / 2
+        const ty = rh / 2
+        const fontSize = Math.min(rw, rh) * 0.8
+
+        const textAttrStr = Object.entries({
+            "text-anchor": "middle",
+            "dominant-baseline": "central",
+            "font-family": "'Pretendard Variable', Pretendard, sans-serif",
+            "font-size": `${fontSize}px`,
+            fill: "black",
+            ...customTextAttrs
+        }).map(([k, v]) => `${k}="${v}"`).join(" ")
+
+        return `
+    <g transform="translate(${rx},${ry})">
+        <rect width="${rw}" height="${rh}" ${rectAttrStr} />
+        <text x="${tx}" y="${ty}" ${textAttrStr}>${escapeXml(d.data.name)}</text>
+    </g>`
+    }).join("")
+
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}">
+    <style>
+        @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+    </style>
+    <rect width="${width}" height="${height}" fill="white" />
+    ${rectsHtml}
+</svg>`
 }
