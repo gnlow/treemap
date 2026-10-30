@@ -57,17 +57,19 @@ export const treemap =
     sort,
     text = () => "",
     value = () => 1,
-    fontSize = 1,
     rectAttrs,
     textAttrs,
+    width = 320,
+    height = 180,
 }: {
     group?: (datum: T) => (string | number)[],
     sort?: (a: T, b: T) => number,
     text?: (datum: T) => string,
     value?: (datum: T) => number,
-    fontSize?: number,
     rectAttrs?: (datum: T) => Record<string, string | number>,
     textAttrs?: (datum: T) => Record<string, string | number>,
+    width?: number,
+    height?: number,
 } = {}) =>
 (data: T[]) => {
     let root = d3.hierarchy<Node<T>>(
@@ -89,8 +91,6 @@ export const treemap =
             return 0
         })
     }
-
-    const [width, height] = [1600, 900]
 
     d3.treemap<Node<T>>()
         .size([width, height])
@@ -129,9 +129,7 @@ export const treemap =
             "text-anchor": "middle",
             "dominant-baseline": "central",
             "font-family": "'Pretendard Variable', Pretendard, sans-serif",
-            "font-size": val*fontSize,
             fill: "black",
-            ...customTextAttrs
         }).map(([k, v]) => `${k}="${v}"`).join(" ")
 
         return `

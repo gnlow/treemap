@@ -1,15 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180" width="320" height="180">
     <style>
         @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
     </style>
-    <rect width="1600" height="900" fill="white" />
+    <rect width="320" height="180" fill="white" />
     
     <g transform="translate(2,2)">
-        <rect width="1063.6666666666667" height="896" fill="red" />
-        <text x="531.8333333333334" y="448" text-anchor="middle" dominant-baseline="central" font-family="'Pretendard Variable', Pretendard, sans-serif" font-size="20" fill="black">괴</text>
+        <rect width="210.33333333333334" height="176" fill="red" />
+        <text x="105.16666666666667" y="88" text-anchor="middle" dominant-baseline="central" font-family="'Pretendard Variable', Pretendard, sans-serif" fill="black">괴</text>
     </g>
-    <g transform="translate(1066.6666666666667,2)">
-        <rect width="531.3333333333333" height="896" fill="red" />
-        <text x="265.66666666666663" y="448" text-anchor="middle" dominant-baseline="central" font-family="'Pretendard Variable', Pretendard, sans-serif" font-size="10" fill="black">b</text>
+    <g transform="translate(213.33333333333334,2)">
+        <rect width="104.66666666666666" height="176" fill="red" />
+        <text x="52.33333333333333" y="88" text-anchor="middle" dominant-baseline="central" font-family="'Pretendard Variable', Pretendard, sans-serif" fill="black">b</text>
     </g>
 </svg>
