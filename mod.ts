@@ -4,10 +4,11 @@ type Tree<A> = {
     [key: string | number]: A[] | Tree<A>
 }
 
-interface Node<V = number> {
+interface Node<T> {
     name: string
-    value?: V
-    children?: Node[]
+    value?: number
+    children?: Node<T>[]
+    original?: T
 }
 
 const tree_ =
@@ -30,10 +31,10 @@ const tree_ =
 
 const tree =
 <A>
-(f: (a: A) => (string | number)[], g: (a: A) => Node) =>
+(f: (a: A) => (string | number)[], g: (a: A) => Node<A>) =>
 (as: A[]) => {
     const data = tree_(f)(as)
-    const go = (tree: A[] | Tree<A>, name = "root"): Node => {
+    const go = (tree: A[] | Tree<A>, name = "root"): Node<A> => {
         if (Array.isArray(tree)) {
             return {
                 name,
@@ -50,38 +51,51 @@ const tree =
     return go(data)
 }
 
-type KV = [string, number]
-
 export const treemap =
-({ group, sort, rectAttrs, textAttrs }: {
-    group?: (datum: KV) => (string | number)[],
-    sort?: (a: KV, b: KV) => number,
-    rectAttrs?: (datum: KV) => Record<string, string | number>,
-    textAttrs?: (datum: KV) => Record<string, string | number>,
+<T>({
+    group,
+    sort,
+    text = () => "",
+    value = () => 1,
+    rectAttrs,
+    textAttrs,
+}: {
+    group?: (datum: T) => (string | number)[],
+    sort?: (a: T, b: T) => number,
+    text?: (datum: T) => string,
+    value?: (datum: T) => number,
+    rectAttrs?: (datum: T) => Record<string, string | number>,
+    textAttrs?: (datum: T) => Record<string, string | number>,
 } = {}) =>
-(data: KV[]) => {
-    let root = d3.hierarchy<Node>(
-        tree<KV>(
+(data: T[]) => {
+    let root = d3.hierarchy<Node<T>>(
+        tree<T>(
             group ?? (() => [""]),
-            ([k, v]) => ({ name: k, value: v }),
+            (d: T) => ({
+                name: text(d),
+                value: value(d),
+                original: d,
+            }),
         )(data)
     ).sum(d => d.value || 0)
     
     if (sort) {
-        root = root.sort((a, b) => sort(
-            [ a.data.name, a.data.value || 0 ],
-            [ b.data.name, b.data.value || 0 ],
-        ))
+        root = root.sort((a, b) => {
+            if (a.data.original && b.data.original) {
+                return sort(a.data.original, b.data.original)
+            }
+            return 0
+        })
     }
 
     const [width, height] = [1600, 900]
 
-    d3.treemap<Node>()
+    d3.treemap<Node<T>>()
         .size([width, height])
         .padding(1)
         (root)
 
-    const leaves = (root as d3.HierarchyRectangularNode<Node>).leaves()
+    const leaves = (root as d3.HierarchyRectangularNode<Node<T>>).leaves()
 
     const escapeXml = (str: string) => 
         str.replace(/[<>&'"]/g, c => ({
@@ -89,9 +103,10 @@ export const treemap =
         }[c]!))
 
     const rectsHtml = leaves.map(d => {
-        const datum: KV = [d.data.name, d.data.value || 0]
+        const datum = d.data.original as T
         const customRectAttrs = rectAttrs?.(datum) ?? {}
         const customTextAttrs = textAttrs?.(datum) ?? {}
+        const displayText = text(datum)
 
         const rx = d.x0
         const ry = d.y0
@@ -119,7 +134,7 @@ export const treemap =
         return `
     <g transform="translate(${rx},${ry})">
         <rect width="${rw}" height="${rh}" ${rectAttrStr} />
-        <text x="${tx}" y="${ty}" ${textAttrStr}>${escapeXml(d.data.name)}</text>
+        <text x="${tx}" y="${ty}" ${textAttrStr}>${escapeXml(displayText)}</text>
     </g>`
     }).join("")
 
