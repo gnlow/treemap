@@ -130,6 +130,7 @@ export const treemap =
             "dominant-baseline": "central",
             "font-family": "'Pretendard Variable', Pretendard, sans-serif",
             fill: "black",
+            ...customTextAttrs,
         }).map(([k, v]) => `${k}="${v}"`).join(" ")
 
         return `
