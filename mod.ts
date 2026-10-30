@@ -3,7 +3,7 @@ import * as d3 from "https://esm.sh/d3@7.9.0"
 import {
     createCanvas,
     CanvasRenderingContext2D as Ctx,
-} from "jsr:@gfx/canvas@0.5.8"
+} from "https://deno.land/x/canvas@v1.4.2/mod.ts"
 
 type Tree<A> = {
     [key: string | number]: A[] | Tree<A>
@@ -54,12 +54,6 @@ const tree =
     }
     return go(data)
 }
-
-console.log(tree_<number>(a => [a % 2 ? 1 : 0])([0, 1, 2, 3]))
-console.log(tree<number>(a => [a % 2 ? 1 : 0], a => ({
-    name: "n" + a,
-    value: a,
-}))([0, 1, 2, 3]))
 
 type KV = [string, number]
 

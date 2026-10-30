@@ -1,6 +1,13 @@
 import { treemap } from "./mod.ts"
 
-console.log(treemap()([
-    ["a", 2],
-    ["b", 1],
-]))
+await Deno.writeFile(
+    "test.png",
+    treemap({
+        bg: ctx => datum => {
+            ctx.fillStyle = "red"
+        },
+    })([
+        ["a", 2],
+        ["b", 1],
+    ]).toBuffer(),
+)
