@@ -4,12 +4,12 @@
     </style>
     <rect width="320" height="180" fill="white" />
     
-    <g transform="translate(2,2)">
-        <rect width="210.33333333333334" height="176" fill="red" />
-        <text x="105.16666666666667" y="88" text-anchor="middle" dominant-baseline="central" font-family="'Pretendard Variable', Pretendard, sans-serif" fill="black">괴</text>
+    <g transform="translate(0,0)">
+        <rect width="320" height="120" fill="red" stroke-width="1" stroke="white" />
+        <text x="160" y="60" text-anchor="middle" dominant-baseline="central" font-family="'Pretendard Variable', Pretendard, sans-serif" fill="black">괴</text>
     </g>
-    <g transform="translate(213.33333333333334,2)">
-        <rect width="104.66666666666666" height="176" fill="red" />
-        <text x="52.33333333333333" y="88" text-anchor="middle" dominant-baseline="central" font-family="'Pretendard Variable', Pretendard, sans-serif" fill="black">b</text>
+    <g transform="translate(0,120)">
+        <rect width="320" height="60" fill="red" stroke-width="1" stroke="white" />
+        <text x="160" y="30" text-anchor="middle" dominant-baseline="central" font-family="'Pretendard Variable', Pretendard, sans-serif" fill="black">b</text>
     </g>
 </svg>

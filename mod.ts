@@ -61,6 +61,7 @@ export const treemap =
     textAttrs,
     width = 320,
     height = 180,
+    ratio = 1,
 }: {
     group?: (datum: T) => (string | number)[],
     sort?: (a: T, b: T) => number,
@@ -70,6 +71,7 @@ export const treemap =
     textAttrs?: (datum: T) => Record<string, string | number>,
     width?: number,
     height?: number,
+    ratio?: number,
 } = {}) =>
 (data: T[]) => {
     let root = d3.hierarchy<Node<T>>(
@@ -93,8 +95,9 @@ export const treemap =
     }
 
     d3.treemap<Node<T>>()
-        .size([width, height])
-        .padding(1)
+        .size([width/ratio, height])
+        //.padding(1)
+        .tile(d3.treemapSquarify.ratio(1))
         (root)
 
     const leaves = (root as d3.HierarchyRectangularNode<Node<T>>).leaves()
@@ -110,13 +113,15 @@ export const treemap =
         const customTextAttrs = textAttrs?.(datum) ?? {}
         const displayText = text(datum)
 
-        const rx = d.x0
+        const rx = d.x0*ratio
         const ry = d.y0
-        const rw = d.x1 - d.x0
+        const rw = (d.x1 - d.x0)*ratio
         const rh = d.y1 - d.y0
 
         const rectAttrStr = Object.entries({
             fill: "white",
+            "stroke-width": 1,
+            "stroke": "white",
             ...customRectAttrs
         }).map(([k, v]) => `${k}="${v}"`).join(" ")
 

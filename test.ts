@@ -6,6 +6,7 @@ const svgString = treemap<[string, number]>({
     rectAttrs: datum => ({
         fill: "red",
     }),
+    ratio: 5/1,
 })([
     ["괴", 2],
     ["b", 1],
